@@ -2,7 +2,7 @@ resource_group_name           = "analyticsdatabricks-qa-group"
 location                      = "westus2"
 environment                   = "qa"
 application_name              = "analyticsdatabricks"
-workspace_sku                 = "premium"
+workspace_sku = "standard"
 no_public_ip                  = true
 public_network_access_enabled = true
 
@@ -17,7 +17,7 @@ cluster_policies = {
         },
         "azure_attributes.availability": {
           "type": "unlimited",
-          "defaultValue": "SPOT_WITH_FALLBACK_AZURE"
+          "defaultValue": "ON_DEMAND_AZURE"
         },
         "azure_attributes.spot_bid_max_price": {
           "type": "fixed",
@@ -100,7 +100,7 @@ cluster_policies = {
         },
         "azure_attributes.availability": {
           "type": "unlimited",
-          "defaultValue": "SPOT_WITH_FALLBACK_AZURE"
+          "defaultValue": "ON_DEMAND_AZURE"
         },
         "azure_attributes.spot_bid_max_price": {
           "type": "fixed",
@@ -179,7 +179,7 @@ tags = {
   "Environment"     = "QA"
   "Initiative"      = "DATAOPS"
   "ProductName"     = "analyticsdatabricks"
-  "Team"            = "Analytics"
+  "Team" = "Platform"
   "aag-team"        = "Analytics_OPS"
   "aag-tier"        = "3"
   "repo"            = "https://github.com/Alaska-ITS/databricks-team-workspaces.git"
