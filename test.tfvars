@@ -162,6 +162,35 @@ cluster_policies = {
       }
     EOT
   }
+
+  gpu = {
+    name       = "GPU Cluster Policy"
+    definition = <<EOT
+      {
+        "spark_version": {
+          "type": "unlimited",
+          "defaultValue": "auto:latest-gpu"
+        },
+        "node_type_id": {
+          "type": "fixed",
+          "value": "Standard_NC6"
+        },
+        "num_workers": {
+          "type": "fixed",
+          "value": 1
+        },
+        "driver_node_type_id": {
+          "type": "fixed",
+          "value": "Standard_NC6"
+        },
+        "access_mode": {
+          "type": "fixed",
+          "value": "SINGLE_USER"
+        }
+      }
+    EOT
+  },
+
 }
 
 virtual_networks = {
