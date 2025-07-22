@@ -9,7 +9,58 @@ public_network_access_enabled = true
 cluster_policies = {        
 
   
-  test-policy-1 = {
+  
+  test-policy-2 = {
+    name       = "Test Policy with Permissions"
+    definition = <<EOT
+      {
+        "spark_version": {
+          "type": "unlimited",
+          "defaultValue": "auto:latest-lts"
+        },
+        "node_type_id": {
+          "type": "fixed",
+          "value": "Standard_DS3_v2"
+        },
+        "num_workers": {
+          "type": "fixed",
+          "value": 2
+        },
+        "azure_attributes.availability": {
+          "type": "unlimited",
+          "defaultValue": "ON_DEMAND_AZURE"
+        },
+        "azure_attributes.spot_bid_max_price": {
+          "type": "fixed",
+          "value": -1,
+          "hidden": true
+        },
+        "azure_attributes.first_on_demand": {
+          "type": "fixed",
+          "value": 1
+        },
+        "driver_node_type_id": {
+          "type": "fixed",
+          "value": "Standard_DS3_v2"
+        },
+        "access_mode": {
+          "type": "fixed",
+          "value": "SINGLE_USER"
+        }
+      }
+    EOT
+    permissions = [
+      {
+        group_name       = "AAD.TestGroup1"
+        permission_level = "CAN_USE"
+      },
+      {
+        group_name       = "AAD.TestGroup2"
+        permission_level = "CAN_ATTACH_TO"
+      }
+    ]
+  },
+test-policy-1 = {
     name       = "Test Policy with Permissions"
     definition = <<EOT
       {
