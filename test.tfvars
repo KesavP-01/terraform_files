@@ -368,3 +368,274 @@ TEST 10.113.3.32/28
   QA 10.114.3.32/28
 PROD 10.115.3.32/28
 */
+
+
+
+workspace_name      = "analyticsdatabricks-test-wu2"
+resource_group_name = "analyticsdatabricks-test-group"
+
+# Define the root directories and their respective permissions
+root_directories = {
+  "/CommercialAnalytics" = {
+    permissions = [
+      {
+        group_name       = "AAD.CommercialAnalytics.AzureAccess"
+        permission_level = "CAN_READ"
+      },
+      {
+        group_name       = "AADO.CALakehouseRW.NonProd"
+        permission_level = "CAN_READ"
+      }
+    ]
+  },
+}
+secret_scopes = {
+  "CommercialAnalytics" = {
+    secret_scope_name     = "CommercialAnalytics"
+    key_vault_dns_name    = "https://ancommercial-test-kv.vault.azure.net/"
+    key_vault_resource_id = "/subscriptions/711baa27-35f4-4bc1-af7a-ee88b5af8977/resourceGroups/commercialanalytics-test-group/providers/Microsoft.KeyVault/vaults/ancommercial-test-kv"
+  }
+}
+secret_scope_acls = {
+  "CommercialAnalytics-AADO.CALakehouseRW.NonProd" = {
+    scope_name = "CommercialAnalytics"
+    principal  = "AADO.CALakehouseRW.NonProd"
+    permission = "READ"
+  }
+}
+databricks_clusters = {
+  "CommercialAnalytics-SM" = {
+    is_pinned               = true
+    cluster_name            = "CommercialAnalytics-SM"
+    spark_version           = "14.3.x-scala2.12"
+    node_type_id            = "Standard_F4s_v2"
+    autotermination_minutes = 60
+    policy                  = "Small Cluster Policy"
+    num_workers             = 1
+    # autoscale = {
+    #   min_workers = 1
+    #   max_workers = 2
+    # }
+    spark_env_vars = {}
+    custom_tags = {
+      "cluster-owner-team" = "CommercialAnalytics"
+      "lifecycle"          = "Permanent"
+      "Cluster-type"       = "Small"
+      "owner"              = "Tak Wong"
+      "Priority"           = "high"
+      "Environment"        = "NON-PROD"
+      "Group"              = "AAD.CommercialAnalytics.AzureAccess"
+      "aag_team"           = "Analytics_OPS"
+      "projectcategory"    = "CommercialAnalytics"
+      "project"            = "Analytics"
+      "workstream"         = "Analytics_Transformation"
+      "workloadtype"       = "DailyLoad"
+    }
+    runtime_engine = "STANDARD"
+    azure_attributes = {
+      availability = "SPOT_WITH_FALLBACK_AZURE"
+    }
+    pypl_libraries = {
+      "sqlalchemy" = "2.0.40"
+      "typing_extensions"  = "4.5.0"
+    }
+    spark_confs = {
+      "credentials"                                            = "{{secrets/CommercialAnalytics/credentials}}"
+      "google.cloud.auth.service.account.enable"               = "true"
+      "spark.hadoop.fs.gs.auth.service.account.email"          = "yujun-tableau@as-digital-marketing.iam.gserviceaccount.com"
+      "spark.hadoop.fs.gs.auth.service.account.private.key"    = "{{secrets/CommercialAnalytics/gcp-private-key}}"
+      "spark.hadoop.fs.gs.auth.service.account.private.key.id" = "{{secrets/CommercialAnalytics/gcp-private-key-id}}"
+      "spark.hadoop.fs.gs.project.id"                          = "as-digital-marketing"
+      "spark.network.timeout"                                  = "720s"
+      "spark.sql.execution.arrow.pyspark.enabled"              = "false"
+      "spark.sql.streaming.stopTimeout"                        = "720s"
+
+    }
+    java_library_files = {
+      "ojdbc8.jar" = "/Volumes/utility_test/ds_utility/dbr_share/ojdbc8.jar"
+    }
+    cluster_permissions = [
+      {
+        group_name       = "AAD.CommercialAnalytics.AzureAccess"
+        permission_level = "CAN_MANAGE"
+      },
+      {
+        group_name       = "AAD.CCC.AzureAccess*"
+        permission_level = "CAN_MANAGE"
+      }
+    ]
+  }
+  "CommercialAnalytics-General" = {
+    is_pinned               = true
+    cluster_name            = "CommercialAnalytics-General"
+    spark_version           = "14.3.x-scala2.12"
+    node_type_id            = "Standard_DS4_v2"
+    autotermination_minutes = 60
+    policy                  = "General Cluster Policy"
+    autoscale = {
+      min_workers = 2
+      max_workers = 8
+    }
+    spark_env_vars = {}
+    custom_tags = {
+      "cluster-owner-team" = "CommercialAnalytics"
+      "lifecycle"          = "Permanent"
+      "Cluster-type"       = "General"
+      "owner"              = "Tak Wong"
+      "Priority"           = "high"
+      "Environment"        = "NON-PROD"
+      "Group"              = "AAD.CommercialAnalytics.AzureAccess"
+      "aag_team"           = "Analytics_OPS"
+      "projectcategory"    = "CommercialAnalytics"
+      "project"            = "Analytics"
+      "workstream"         = "Analytics_Transformation"
+      "workloadtype"       = "DailyLoad"
+    }
+    runtime_engine = "PHOTON"
+    azure_attributes = {
+      availability = "SPOT_WITH_FALLBACK_AZURE"
+    }
+    pypl_libraries = {
+      "openpyxl" = ""
+      "pyyaml"  = ""
+    }
+    spark_confs = {
+      "credentials"                                            = "{{secrets/CommercialAnalytics/credentials}}"
+      "google.cloud.auth.service.account.enable"               = "true"
+      "spark.hadoop.fs.gs.auth.service.account.email"          = "yujun-tableau@as-digital-marketing.iam.gserviceaccount.com"
+      "spark.hadoop.fs.gs.auth.service.account.private.key"    = "{{secrets/CommercialAnalytics/gcp-private-key}}"
+      "spark.hadoop.fs.gs.auth.service.account.private.key.id" = "{{secrets/CommercialAnalytics/gcp-private-key-id}}"
+      "spark.hadoop.fs.gs.project.id"                          = "as-digital-marketing"
+      "spark.network.timeout"                                  = "720s"
+      "spark.sql.execution.arrow.pyspark.enabled"              = "false"
+      "spark.sql.streaming.stopTimeout"                        = "720s"
+
+    }
+    java_library_files = {
+      "ojdbc8.jar" = "/Volumes/utility_test/ds_utility/dbr_share/ojdbc8.jar"
+    }
+    cluster_permissions = [
+      {
+        group_name       = "AAD.CommercialAnalytics.AzureAccess"
+        permission_level = "CAN_MANAGE"
+      },
+      {
+        group_name       = "AAD.CCC.AzureAccess*"
+        permission_level = "CAN_MANAGE"
+      }
+    ]
+  }
+  "CommercialAnalytics-Memory" = {
+    num_workers             = 1
+    is_pinned               = true
+    cluster_name            = "CommercialAnalytics-Memory"
+    spark_version           = "14.3.x-scala2.12"
+    node_type_id            = "Standard_DS12_v2"
+    driver_node_type_id     = "Standard_DS3_v2"
+    autotermination_minutes = 60
+    policy                  = "Memory Cluster Policy"
+    spark_env_vars          = {}
+    custom_tags = {
+      "cluster-owner-team" = "CommercialAnalytics"
+      "lifecycle"          = "Permanent"
+      "Cluster-type"       = "Memory"
+      "owner"              = "Tak Wong"
+      "Priority"           = "high"
+      "Environment"        = "NON-PROD"
+      "Group"              = "AAD.CommercialAnalytics.AzureAccess"
+      "aag_team"           = "Analytics_OPS"
+      "projectcategory"    = "CommercialAnalytics"
+      "project"            = "Analytics"
+      "workstream"         = "Analytics_Transformation"
+      "workloadtype"       = "DailyLoad"
+    }
+    runtime_engine = "STANDARD"
+    azure_attributes = {
+      availability = "ON_DEMAND_AZURE"
+    }
+    spark_confs = {
+      "credentials"                                            = "{{secrets/CommercialAnalytics/credentials}}"
+      "google.cloud.auth.service.account.enable"               = "true"
+      "spark.hadoop.fs.gs.auth.service.account.email"          = "yujun-tableau@as-digital-marketing.iam.gserviceaccount.com"
+      "spark.hadoop.fs.gs.auth.service.account.private.key"    = "{{secrets/CommercialAnalytics/gcp-private-key}}"
+      "spark.hadoop.fs.gs.auth.service.account.private.key.id" = "{{secrets/CommercialAnalytics/gcp-private-key-id}}"
+      "spark.hadoop.fs.gs.project.id"                          = "as-digital-marketing"
+      "spark.network.timeout"                                  = "720s"
+      "spark.sql.execution.arrow.pyspark.enabled"              = "false"
+      "spark.sql.streaming.stopTimeout"                        = "720s"
+
+    }
+    java_library_files = {
+      "ojdbc8.jar" = "/Volumes/utility_test/ds_utility/dbr_share/ojdbc8.jar"
+    }
+    cluster_permissions = [
+      {
+        group_name       = "AAD.CommercialAnalytics.AzureAccess"
+        permission_level = "CAN_MANAGE"
+      },
+      {
+        group_name       = "AAD.CCC.AzureAccess*"
+        permission_level = "CAN_MANAGE"
+      }
+    ]
+  }
+}
+tags = {
+  "ApplicationName" = "analyticsdatabricks"
+  "Contact"         = "tak.wong@alaskaair.com"
+  "Environment"     = "TEST"
+  "Initiative"      = "DATAOPS"
+  "ProductName"     = "analyticsdatabricks"
+  "Team"            = "Analytics"
+  "aag_team"        = "Analytics_OPS"
+  "aag-tier"        = "3"
+  "projectcategory"    = "CommercialAnalytics"
+  "project"            = "Analytics"
+  "workstream"         = "Analytics_Transformation"
+  "workloadtype"       = "DailyLoad"
+
+}
+sql_warehouses = {
+  warehouse = {
+    name                      = "Commercial Analytics SQL warehouse"
+    min_num_clusters          = 1
+    max_num_clusters          = 1
+    auto_stop_mins            = 20
+    cluster_size              = "2X-Small"
+    enable_serverless_compute = true
+    warehouse_type            = "PRO"
+    channel                   = "CHANNEL_NAME_CURRENT"
+    custom_tags = {
+      "cluster-owner-team" = "CommercialAnalytics"
+      "lifecycle"          = "Permanent"
+      "Cluster-type"       = "Small"
+      "cluster-owner"      = "Tak Wong"
+      "Priority"           = "high"
+      "Environment"        = "NON-PROD"
+      "Group"              = "AAD.CommercialAnalytics.AzureAccess"
+    }
+  }
+
+  CA_ha_snowflake = {
+    name                      = "CA_ha_snowflake"
+    min_num_clusters          = 1
+    max_num_clusters          = 1
+    auto_stop_mins            = 45
+    cluster_size              = "Small"
+    enable_serverless_compute = false
+    warehouse_type            = "PRO"
+    channel                   = "CHANNEL_NAME_CURRENT"
+    spot_instance_policy      = "COST_OPTIMIZED"
+    custom_tags = {
+      "aag-team"           = "CommercialAnalytics"
+      "Group"              = "AAD.CommercialAnalytics.AzureAccess"
+      "cluster_name"       = "CA_ha_snowflake"
+      "cluster-owner"      = "Beth Davis"
+      "cluster-owner-team" = "CommercialAnalytics"
+      "Cluster-type"       = "Small"
+      "lifecycle"          = "Permanent"
+      "Priority"           = "high"
+      "Environment"        = "NON-PROD"
+    }
+  }
+}
