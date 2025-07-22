@@ -404,6 +404,32 @@ secret_scope_acls = {
   }
 }
 databricks_clusters = {
+    CommercialAnalytics-New = {
+      cluster_name = "CommercialAnalytics-New"
+      is_pinned = true
+      spark_version = "14.3.x-scala2.12"
+      node_type_id = "Standard_DS4_v2"
+      autotermination_minutes = 60
+      policy = "General Cluster Policy"
+      num_workers = 2
+      spark_env_vars = {
+
+      }
+      custom_tags = {
+        Environment = "NON-PROD"
+        Group = "AAD.CommercialAnalytics.AzureAccess"
+      }
+      runtime_engine = "PHOTON"
+      azure_attributes = {
+        availability = "SPOT_WITH_FALLBACK_AZURE"
+      }
+      cluster_permissions = [
+        {
+          group_name = "AAD.CommercialAnalytics.AzureAccess"
+          permission_level = "CAN_MANAGE"
+        }
+      ]
+    }
   "CommercialAnalytics-SM" = {
     is_pinned               = true
     cluster_name            = "CommercialAnalytics-SM"
