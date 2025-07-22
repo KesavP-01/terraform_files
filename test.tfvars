@@ -7,6 +7,47 @@ no_public_ip                  = true
 public_network_access_enabled = true
 
 cluster_policies = {        
+
+  test-2 = {
+    name       = "Test Cluster Policy"
+    definition = <<EOT
+      {
+        "spark_version": {
+          "type": "unlimited",
+          "defaultValue": "auto:latest-gpu"
+        },
+        "node_type_id": {
+          "type": "fixed",
+          "value": "Standard_NC6"
+        },
+        "num_workers": {
+          "type": "fixed",
+          "value": 1
+        },
+        "azure_attributes.availability": {
+          "type": "unlimited",
+          "defaultValue": "ON_DEMAND_AZURE"
+        },
+        "azure_attributes.spot_bid_max_price": {
+          "type": "fixed",
+          "value": -1,
+          "hidden": true
+        },
+        "azure_attributes.first_on_demand": {
+          "type": "fixed",
+          "value": 1
+        },
+        "driver_node_type_id": {
+          "type": "fixed",
+          "value": "Standard_NC6"
+        },
+        "access_mode": {
+          "type": "fixed",
+          "value": "SINGLE_USER"
+        }
+      }
+    EOT
+  },
 test = {
     name       = "Test Cluster Policy"
     definition = <<EOT
