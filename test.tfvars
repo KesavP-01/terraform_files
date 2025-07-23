@@ -731,7 +731,27 @@ tags = {
 
 }
 sql_warehouses = {
-  warehouse = {
+  
+  small_analytics_wh = {
+    name                      = "small-analytics-warehouse"
+    min_num_clusters          = 1
+    max_num_clusters          = 3
+    auto_stop_mins            = 15
+    cluster_size              = "2X-Small"
+    enable_serverless_compute = true
+    warehouse_type            = "PRO"
+    channel                   = "CHANNEL_NAME_CURRENT"
+    custom_tags = {
+      "cluster-owner-team" = "CommercialAnalytics"
+      "lifecycle"          = "Permanent"
+      "Cluster-type"       = "Small"
+      "cluster-owner"      = "Tak Wong"
+      "Priority"           = "high"
+      "Environment"        = "NON-PROD"
+      "Group"              = "AAD.CommercialAnalytics.AzureAccess"
+    }
+  },
+warehouse = {
     name                      = "Commercial Analytics SQL warehouse"
     min_num_clusters          = 1
     max_num_clusters          = 1
