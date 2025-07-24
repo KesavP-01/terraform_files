@@ -1,0 +1,117 @@
+bundle:
+  name: juneau # Specific to the project
+
+variables:
+  branch_path_component:
+    default: "pr-default" 
+    description: "Sanitized Git feature branch name used for isolated Spoke deployments during PR validation."
+    
+  budget_policy_id:
+    default: "65377525-754e-4e86-9064-1122c9a84238"
+    description: "Serverless budget policy"
+  
+  environment_prefix:
+    default: "[TEST] "
+    description: "Environment prefix for job names"
+
+  # job_name_suffix:
+  #   default: "(${var.branch_path_component})"
+  #   description: "Suffix to append to job names to make them unique during development"
+
+  job_pause_status:
+    default: "PAUSED"
+    description: "Set a job to PAUSED OR UNPAUSED"
+
+  job_cluster_policy_id:
+    default: ""
+    description: "Job Small Cluster Policy id"
+
+  spark_version:
+    default: "14.3.x-scala2.12"
+    description: "Spark version"
+
+  default_failure_emails:
+    default:
+      - dataoperations@alaskaair.com
+    type: array 
+    description: "Default email recipients for failure notifications"
+
+  default_on_success_emails:
+    default:
+      - dataoperations@alaskaair.com
+    type: array 
+    description: "Default email recipients for on success notifications"
+
+  default_on_start_emails:
+    default:
+      - dataoperations@alaskaair.com
+    type: array 
+    description: "Default email recipients for on start notifications"
+
+  service_principal_name:
+    default: ""
+    description: "Service principal ComAnalyticsDatbricksJob-{env}-spn"
+
+  team-folder:
+    default: "Cargo"
+    description: "Folder name for the assigned team"
+
+  zenoss_function:
+    default: ""
+    description: "This is the Zenoss function id that sends an alert when a failure happens. It can open a CR ticket automatically."
+
+include:
+  - resources/jobs/*.yml 
+
+sync:
+  exclude:
+   - src/**
+   - tests/**
+   - .coverage
+   - coverage.xml
+   - data_ingestion.log
+   - .coveragerc
+
+targets:
+  spoke_test:
+    #mode: development
+    workspace:
+      host: https://adb-620317033646362.2.azuredatabricks.net
+      root_path: "/${var.team-folder}/projects/${bundle.name}"
+    variables:
+      environment_prefix: "[TEST]"
+      service_principal_name: "fc24552e-ea8f-405d-bc26-2dd2f30ffafa"
+      zenoss_function: "a80376ac-acee-4e5e-8782-e9ae48d0300b"
+      job_pause_status: "UNPAUSED"
+      job_cluster_policy_id: "00081034EA2222E8"
+
+  spoke_qa: 
+    workspace:
+      host: https://adb-4231201731504057.17.azuredatabricks.net
+      root_path: "/${var.team-folder}/projects/${bundle.name}"
+    variables:
+      environment_prefix: "[QA]"
+      service_principal_name: "a45007b2-7379-4428-84ee-0277a1c633e8" ## not found
+      zenoss_function: "edd39e29-cea2-493d-9864-fc64f019122f"
+      job_pause_status: "UNPAUSED"
+      job_cluster_policy_id: "0002C99C9B278358"
+
+  hub_qa:
+    workspace:
+        host: https://adb-563509159507976.16.azuredatabricks.net/
+        root_path: "/${var.team-folder}/projects/${bundle.name}"
+    variables:
+      environment_prefix: "[HUB-QA]"
+      service_principal_name: "2449b9d2-45fa-4c3d-bfd2-5a5e59b42f84" ## not found
+      zenoss_function: "a0e35c8a-e99e-4fef-b80b-1186b22d8819"
+      job_pause_status: "PAUSED"
+      
+  hub_prod:
+    workspace:
+        host: https://adb-2487935200558749.9.azuredatabricks.net/
+        root_path: "/${var.team-folder}/projects/${bundle.name}"
+    variables:
+      environment_prefix: "[HUB-PROD]"
+      service_principal_name: "c0e208e9-dce7-4fca-8ac0-50ba67ccf3ee" ## not found
+      zenoss_function: "ef0f9478-3551-4fe3-b652-c87d073967f4"
+      job_pause_status: "PAUSED"
