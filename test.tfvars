@@ -458,7 +458,45 @@ databricks_clusters = {
   
   
   
-     testing = {
+      testing = {
+    cluster_name       = "testing"
+    spark_version      = "14.3.x.scala3.13"
+    node_type_id       = "Standard_DS4_v2"
+    auto_termination_minutes = 60
+    policy             = "Small Cluster Policy"
+    num_workers        = 2
+    spark_env_vars     = {}
+    runtime_engine = "STANDARD"
+    azure_attributes = {
+      availability = "SPOT_WITH_FALLBACK_AZURE"
+    }
+    pypl_libraries = {
+      "sqlalchemy" = "2.0.40"
+      "typing_extensions"  = "4.5.0"
+    }
+    spark_confs = {}
+    java_library_files = {
+      "ojdbc8.jar" = "/Volumes/utility_test/ds_utility/dbr_share/ojdbc8.jar"
+    }
+    custom_tags       = {
+      "cluster-owner-team" = "CommercialAnalytics"
+      "lifecycle"          = "Permanent"
+      "Cluster-type"       = "Small"
+      "owner"              = "Tak Wong"
+      "Priority"           = "high"
+      "Environment"        = "NON-PROD"
+      "Group"              = "AAD.CommercialAnalytics.AzureAccess"
+      "aag_team"           = "Analytics_OPS"
+      "projectcategory"    = "CommercialAnalytics"
+      "project"            = "Analytics"
+      "workstream"         = "Analytics_Transformation"
+      "workloadtype"       = "DailyLoad"
+    }
+    permissions = [
+
+    ]
+  },
+testing = {
     cluster_name       = "testing"
     spark_version      = "14.3.x.scala3.13"
     node_type_id       = "Standard_DS4_v2"
