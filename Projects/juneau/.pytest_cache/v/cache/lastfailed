@@ -1,0 +1,10 @@
+{
+  "tests/test_configure_logger.py::test_configure_logger_returns_logger_instance": true,
+  "tests/test_configure_logger.py::test_configure_logger_name": true,
+  "tests/test_configure_logger.py::test_configure_logger_level": true,
+  "tests/test_configure_logger.py::test_configure_logger_has_correct_number_of_handlers": true,
+  "tests/test_configure_logger.py::test_configure_logger_console_handler_properties": true,
+  "tests/test_file_reading.py::test_read_csv_success": true,
+  "tests/test_file_reading.py::test_read_xlsx_success": true,
+  "tests/test_file_reading.py::test_read_xls_success": true
+}
